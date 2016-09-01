@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.7
+- Make dart2js_info strong-mode clean.
+
 ## 0.2.5
 - Changed the `deferred_library_check` tool to allow parts to exclude packages
   and to not assume that unspecified packages are in the main part.
