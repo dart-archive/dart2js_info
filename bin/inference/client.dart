@@ -47,7 +47,7 @@ handleHomePage() {
 handleFileView(String path) async {
   var contents = await HttpRequest.getString('file/$path');
   var visitor = new SendHighlighter(path, contents);
-  data.accept(visitor);
+  data.accept(visitor, null);
   var code = '${visitor.code}';
   document.body.setInnerHtml(
       '''
@@ -78,18 +78,18 @@ class UrlRetriever extends RecursiveInfoVisitor {
 
   static List<String> run(AllInfo results) {
     var visitor = new UrlRetriever();
-    results.accept(visitor);
+    results.accept(visitor, null);
     return visitor._paths;
   }
 
   @override
-  visitLibrary(LibraryInfo info) {
+  visitLibrary(LibraryInfo info, _) {
     _paths.add(info.uri.path);
-    super.visitLibrary(info);
+    super.visitLibrary(info, null);
   }
 
   @override
-  visitFunction(FunctionInfo info) {
+  visitFunction(FunctionInfo info, _) {
     var path = info.measurements?.uri?.path;
     if (path != null) _paths.add(path);
   }
@@ -117,7 +117,7 @@ class SendHighlighter extends RecursiveInfoVisitor {
   }
 
   @override
-  Null visitFunction(FunctionInfo function) {
+  Null visitFunction(FunctionInfo function, _) {
     if (function.measurements?.uri?.path != path) return null;
     var entries = function.measurements.entries;
     for (var metric in entries.keys) {

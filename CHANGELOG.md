@@ -1,3 +1,8 @@
+## 0.6.0
+
+- Added `diff` tool.
+- Changed `InfoVisitor` methods to take a context parameter.
+
 ## 0.5.4+2
 
 - Updated minimum SDK dependency to align with package dependencies.

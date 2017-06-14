@@ -63,6 +63,10 @@ The following tools are a available today:
     dependency between functions and fields in your program. Currently it only
     supports the `some_path` query, which shows a dependency path from one
     function to another.
+    
+  * [`diff`][diff]: a tool that diffs two info files and reports which
+    program elements have been added, removed, or changed size. This also
+    tells which elements are no longer deferred or have become deferred.
 
   * [`library_size_split`][lib_split]: a tool that shows how much code was
     attributed to each library. This tool is configurable so it can group data
@@ -119,6 +123,42 @@ a fully qualified element name, which includes the library and class name
 
 If the name of a function your are looking for is unique enough, it might be
 sufficient to just write that name as your regular expression.
+
+### Diff tool
+
+This command-line tool shows a diff between two info files. It can be run
+as follows:
+
+```bash
+pub global activate dart2js_info # only needed once
+dart2js_info_diff old.js.info.json new.js.info.json
+```
+
+The tool gives a breakdown of the difference between the two info files.
+Here's an example output:
+
+```
+OVERALL SIZE DIFFERENCE
+========================================================================
+3 bytes
+
+ADDED
+========================================================================
+
+REMOVED
+========================================================================
+file:///home/het/Code/foo/foo.dart::A.y: 0 bytes
+
+CHANGED SIZE
+========================================================================
+
+BECAME DEFERRED
+========================================================================
+
+NO LONGER DEFERRED
+========================================================================
+
+```
 
 ### Library size split tool
 
@@ -394,6 +434,7 @@ bugs at the [issue tracker][tracker].
 [repo]: https://github.com/dart-lang/dart2js_info/
 [tracker]: https://github.com/dart-lang/dart2js_info/issues
 [code_deps]: https://github.com/dart-lang/dart2js_info/blob/master/bin/code_deps.dart
+[diff]: https://github.com/dart-lang/dart2js_info/blob/master/bin/diff.dart
 [lib_split]: https://github.com/dart-lang/dart2js_info/blob/master/bin/library_size_split.dart
 [deferred_lib]: https://github.com/dart-lang/dart2js_info/blob/master/bin/deferred_library_check.dart
 [deferred_size]: https://github.com/dart-lang/dart2js_info/blob/master/bin/deferred_library_size.dart

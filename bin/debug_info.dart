@@ -35,7 +35,7 @@ main(args) async {
 validateSize(AllInfo info, String debugLibName) {
   // Gather data from visiting all info elements.
   var tracker = new _SizeTracker(debugLibName);
-  info.accept(tracker);
+  info.accept(tracker, null);
 
   // Validate that listed elements include elements of each library.
   Set<Info> listed = new Set()..addAll(info.functions)..addAll(info.fields);
@@ -122,14 +122,14 @@ class _SizeTracker extends RecursiveInfoVisitor {
   }
 
   bool _debug = false;
-  visitLibrary(LibraryInfo info) {
+  visitLibrary(LibraryInfo info, _) {
     if (_debugLibName != null) _debug = info.name.contains(_debugLibName);
     _push();
     if (_debug) {
       _debugCode.write('{\n');
       _indent = 4;
     }
-    super.visitLibrary(info);
+    super.visitLibrary(info, null);
     _pop(info);
     if (_debug) {
       _debug = false;
@@ -170,23 +170,23 @@ class _SizeTracker extends RecursiveInfoVisitor {
     stack.last._count++;
   }
 
-  visitField(FieldInfo info) {
+  visitField(FieldInfo info, _) {
     _handleCodeInfo(info);
-    super.visitField(info);
+    super.visitField(info, null);
   }
 
-  visitFunction(FunctionInfo info) {
+  visitFunction(FunctionInfo info, _) {
     _handleCodeInfo(info);
-    super.visitFunction(info);
+    super.visitFunction(info, null);
   }
 
-  visitTypedef(TypedefInfo info) {
+  visitTypedef(TypedefInfo info, _) {
     if (_debug) print('$info');
     stack.last._totalSize += info.size;
-    super.visitTypedef(info);
+    super.visitTypedef(info, null);
   }
 
-  visitClass(ClassInfo info) {
+  visitClass(ClassInfo info, _) {
     if (_debug) {
       print('$info');
       _debugCode.write(' ' * _indent);
@@ -194,7 +194,7 @@ class _SizeTracker extends RecursiveInfoVisitor {
       _indent += 2;
     }
     _push();
-    super.visitClass(info);
+    super.visitClass(info, null);
     _pop(info);
     if (_debug) {
       _debugCode.write(' ' * _indent);
