@@ -21,7 +21,7 @@ main(args) {
 /// Formats [results] as a table.
 String formatAsTable(AllInfo all) {
   var visitor = new _Counter();
-  all.accept(visitor, null);
+  all.accept(visitor);
   var table = new Table();
   table.declareColumn('bundle');
 
@@ -71,7 +71,7 @@ class _Counter extends RecursiveInfoVisitor {
   Measurements currentBundleTotals;
   Measurements totals = new Measurements();
 
-  visitLibrary(LibraryInfo info, _) {
+  visitLibrary(LibraryInfo info, [_]) {
     var uri = info.uri;
     var bundle = uri.scheme == 'package'
         ? uri.pathSegments.first
@@ -82,7 +82,7 @@ class _Counter extends RecursiveInfoVisitor {
     totals.addFrom(currentBundleTotals);
   }
 
-  Null visitFunction(FunctionInfo function, _) {
+  Null visitFunction(FunctionInfo function, [_]) {
     var measurements = function.measurements;
     if (measurements == null) return null;
     currentBundleTotals.addFrom(measurements);

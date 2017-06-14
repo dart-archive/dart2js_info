@@ -47,28 +47,28 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitAll(AllInfo info, BasicInfo context) {
+  visitAll(AllInfo info, [BasicInfo context]) {
     throw new StateError('should not diff AllInfo');
   }
 
   @override
-  visitProgram(ProgramInfo info, BasicInfo context) {
+  visitProgram(ProgramInfo info, [BasicInfo context]) {
     throw new StateError('should not diff ProgramInfo');
   }
 
   @override
-  visitOutput(OutputUnitInfo info, BasicInfo context) {
+  visitOutput(OutputUnitInfo info, [BasicInfo context]) {
     throw new StateError('should not diff OutputUnitInfo');
   }
 
   // TODO(het): diff constants
   @override
-  visitConstant(ConstantInfo info, BasicInfo context) {
+  visitConstant(ConstantInfo info, [BasicInfo context]) {
     throw new StateError('should not diff ConstantInfo');
   }
 
   @override
-  visitLibrary(LibraryInfo info, BasicInfo context) {
+  visitLibrary(LibraryInfo info, [BasicInfo context]) {
     var other = context as LibraryInfo;
     _checkSize(info, other);
     _diffList(info.topLevelVariables, other.topLevelVariables);
@@ -77,7 +77,7 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitClass(ClassInfo info, BasicInfo context) {
+  visitClass(ClassInfo info, [BasicInfo context]) {
     var other = context as ClassInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
@@ -86,7 +86,7 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitClosure(ClosureInfo info, BasicInfo context) {
+  visitClosure(ClosureInfo info, [BasicInfo context]) {
     var other = context as ClosureInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
@@ -94,7 +94,7 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitField(FieldInfo info, BasicInfo context) {
+  visitField(FieldInfo info, [BasicInfo context]) {
     var other = context as FieldInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
@@ -102,7 +102,7 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitFunction(FunctionInfo info, BasicInfo context) {
+  visitFunction(FunctionInfo info, [BasicInfo context]) {
     var other = context as FunctionInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
@@ -110,7 +110,7 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitTypedef(TypedefInfo info, BasicInfo context) {
+  visitTypedef(TypedefInfo info, [BasicInfo context]) {
     var other = context as TypedefInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);

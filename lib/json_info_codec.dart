@@ -300,13 +300,13 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
 
 class AllInfoToJsonConverter extends Converter<AllInfo, Map>
     implements InfoVisitor<Map, Null> {
-  Map convert(AllInfo info) => info.accept(this, null);
+  Map convert(AllInfo info) => info.accept(this);
 
   Map _visitList(List<Info> infos) {
     // Using SplayTree to maintain a consistent order of keys
     var map = new SplayTreeMap<String, Map>(compareNatural);
     for (var info in infos) {
-      map['${info.id}'] = info.accept(this, null);
+      map['${info.id}'] = info.accept(this);
     }
     return map;
   }
@@ -353,7 +353,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
     return map;
   }
 
-  Map visitAll(AllInfo info, _) {
+  Map visitAll(AllInfo info, [_]) {
     var elements = _visitAllInfoElements(info);
     var jsonHolding = _visitAllInfoHolding(info);
     var jsonDependencies = _visitAllInfoDependencies(info);
@@ -361,15 +361,15 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
       'elements': elements,
       'holding': jsonHolding,
       'dependencies': jsonDependencies,
-      'outputUnits': info.outputUnits.map((u) => u.accept(this, null)).toList(),
+      'outputUnits': info.outputUnits.map((u) => u.accept(this)).toList(),
       'dump_version': info.version,
       'deferredFiles': info.deferredFiles,
       'dump_minor_version': '${info.minorVersion}',
-      'program': info.program.accept(this, null)
+      'program': info.program.accept(this)
     };
   }
 
-  Map visitProgram(ProgramInfo info, _) {
+  Map visitProgram(ProgramInfo info, [_]) {
     return {
       'entrypoint': info.entrypoint.serializedId,
       'size': info.size,
@@ -400,7 +400,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
     return res;
   }
 
-  Map visitLibrary(LibraryInfo info, _) {
+  Map visitLibrary(LibraryInfo info, [_]) {
     return _visitBasicInfo(info)
       ..addAll({
         'children': _toSortedSerializIds([
@@ -413,7 +413,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
       });
   }
 
-  Map visitClass(ClassInfo info, _) {
+  Map visitClass(ClassInfo info, [_]) {
     return _visitBasicInfo(info)
       ..addAll({
         // TODO(sigmund): change format, include only when abstract is true.
@@ -423,7 +423,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
       });
   }
 
-  Map visitField(FieldInfo info, _) {
+  Map visitField(FieldInfo info, [_]) {
     var result = _visitBasicInfo(info)
       ..addAll({
         'children': _toSortedSerializIds(info.closures),
@@ -440,7 +440,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
     return result;
   }
 
-  Map visitConstant(ConstantInfo info, _) =>
+  Map visitConstant(ConstantInfo info, [_]) =>
       _visitBasicInfo(info)..addAll({'code': info.code});
 
   // TODO(sigmund): exclude false values (requires bumping the format version):
@@ -484,7 +484,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
     return json;
   }
 
-  Map visitFunction(FunctionInfo info, _) {
+  Map visitFunction(FunctionInfo info, [_]) {
     return _visitBasicInfo(info)
       ..addAll({
         'children': _toSortedSerializIds(info.closures),
@@ -503,15 +503,15 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
       });
   }
 
-  Map visitClosure(ClosureInfo info, _) {
+  Map visitClosure(ClosureInfo info, [_]) {
     return _visitBasicInfo(info)
       ..addAll({'function': info.function.serializedId});
   }
 
-  visitTypedef(TypedefInfo info, _) =>
+  visitTypedef(TypedefInfo info, [_]) =>
       _visitBasicInfo(info)..['type'] = info.type;
 
-  visitOutput(OutputUnitInfo info, _) =>
+  visitOutput(OutputUnitInfo info, [_]) =>
       _visitBasicInfo(info)..['imports'] = info.imports;
 }
 

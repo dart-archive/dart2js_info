@@ -1,7 +1,7 @@
 ## 0.6.0
 
 - Added `diff` tool.
-- Changed `InfoVisitor` methods to take a context parameter.
+- Changed `InfoVisitor` methods to take an optional context parameter.
 
 ## 0.5.4+2
 

@@ -46,7 +46,7 @@ abstract class Info {
   /// Info of the enclosing element.
   Info parent;
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context);
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]);
 }
 
 /// Common information used for most kind of elements.
@@ -171,7 +171,7 @@ class AllInfo {
 
   AllInfo();
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitAll(this, context);
 }
 
@@ -197,7 +197,7 @@ class ProgramInfo {
       this.noSuchMethodEnabled,
       this.minified});
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitProgram(this, context);
 }
 
@@ -231,7 +231,7 @@ class LibraryInfo extends BasicInfo {
 
   LibraryInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitLibrary(this, context);
 }
 
@@ -247,7 +247,7 @@ class OutputUnitInfo extends BasicInfo {
 
   OutputUnitInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitOutput(this, context);
 }
 
@@ -271,7 +271,7 @@ class ClassInfo extends BasicInfo {
 
   ClassInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitClass(this, context);
 }
 
@@ -287,7 +287,7 @@ class ConstantInfo extends BasicInfo {
 
   ConstantInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitConstant(this, context);
 }
 
@@ -325,7 +325,7 @@ class FieldInfo extends BasicInfo with CodeInfo {
 
   FieldInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitField(this, context);
 }
 
@@ -339,7 +339,7 @@ class TypedefInfo extends BasicInfo {
 
   TypedefInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitTypedef(this, context);
 }
 
@@ -404,7 +404,7 @@ class FunctionInfo extends BasicInfo with CodeInfo {
 
   FunctionInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitFunction(this, context);
 }
 
@@ -419,7 +419,7 @@ class ClosureInfo extends BasicInfo {
 
   ClosureInfo._(String serializedId) : super._fromId(serializedId);
 
-  T accept<T, C>(InfoVisitor<T, C> visitor, C context) =>
+  T accept<T, C>(InfoVisitor<T, C> visitor, [C context]) =>
       visitor.visitClosure(this, context);
 }
 
@@ -540,16 +540,16 @@ InfoKind kindFromString(String kind) {
 
 /// A simple visitor for information produced by the dart2js compiler.
 abstract class InfoVisitor<T, C> {
-  T visitAll(AllInfo info, C context);
-  T visitProgram(ProgramInfo info, C context);
-  T visitLibrary(LibraryInfo info, C context);
-  T visitClass(ClassInfo info, C context);
-  T visitField(FieldInfo info, C context);
-  T visitConstant(ConstantInfo info, C context);
-  T visitFunction(FunctionInfo info, C context);
-  T visitTypedef(TypedefInfo info, C context);
-  T visitClosure(ClosureInfo info, C context);
-  T visitOutput(OutputUnitInfo info, C context);
+  T visitAll(AllInfo info, [C context]);
+  T visitProgram(ProgramInfo info, [C context]);
+  T visitLibrary(LibraryInfo info, [C context]);
+  T visitClass(ClassInfo info, [C context]);
+  T visitField(FieldInfo info, [C context]);
+  T visitConstant(ConstantInfo info, [C context]);
+  T visitFunction(FunctionInfo info, [C context]);
+  T visitTypedef(TypedefInfo info, [C context]);
+  T visitClosure(ClosureInfo info, [C context]);
+  T visitOutput(OutputUnitInfo info, [C context]);
 }
 
 /// A visitor that recursively walks each portion of the program. Because the
@@ -559,40 +559,40 @@ abstract class InfoVisitor<T, C> {
 /// visit libraries, then from each library we visit functions and classes, and
 /// so on.
 class RecursiveInfoVisitor extends InfoVisitor<Null, Null> {
-  visitAll(AllInfo info, context) {
+  visitAll(AllInfo info, [_]) {
     // Note: we don't visit functions, fields, classes, and typedefs because
     // they are reachable from the library info.
-    info.libraries.forEach((i) => visitLibrary(i, null));
-    info.constants.forEach((i) => visitConstant(i, null));
+    info.libraries.forEach(visitLibrary);
+    info.constants.forEach(visitConstant);
   }
 
-  visitProgram(ProgramInfo info, _) {}
+  visitProgram(ProgramInfo info, [_]) {}
 
-  visitLibrary(LibraryInfo info, _) {
-    info.topLevelFunctions.forEach((i) => visitFunction(i, null));
-    info.topLevelVariables.forEach((i) => visitField(i, null));
-    info.classes.forEach((i) => visitClass(i, null));
-    info.typedefs.forEach((i) => visitTypedef(i, null));
+  visitLibrary(LibraryInfo info, [_]) {
+    info.topLevelFunctions.forEach(visitFunction);
+    info.topLevelVariables.forEach(visitField);
+    info.classes.forEach(visitClass);
+    info.typedefs.forEach(visitTypedef);
   }
 
-  visitClass(ClassInfo info, _) {
-    info.functions.forEach((i) => visitFunction(i, null));
-    info.fields.forEach((i) => visitField(i, null));
+  visitClass(ClassInfo info, [_]) {
+    info.functions.forEach(visitFunction);
+    info.fields.forEach(visitField);
   }
 
-  visitField(FieldInfo info, _) {
-    info.closures.forEach((i) => visitClosure(i, null));
+  visitField(FieldInfo info, [_]) {
+    info.closures.forEach(visitClosure);
   }
 
-  visitConstant(ConstantInfo info, _) {}
+  visitConstant(ConstantInfo info, [_]) {}
 
-  visitFunction(FunctionInfo info, _) {
-    info.closures.forEach((i) => visitClosure(i, null));
+  visitFunction(FunctionInfo info, [_]) {
+    info.closures.forEach(visitClosure);
   }
 
-  visitTypedef(TypedefInfo info, _) {}
-  visitOutput(OutputUnitInfo info, _) {}
-  visitClosure(ClosureInfo info, _) {
-    visitFunction(info.function, null);
+  visitTypedef(TypedefInfo info, [_]) {}
+  visitOutput(OutputUnitInfo info, [_]) {}
+  visitClosure(ClosureInfo info, [_]) {
+    visitFunction(info.function);
   }
 }

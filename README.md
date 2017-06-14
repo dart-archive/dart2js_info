@@ -106,10 +106,10 @@ this tool only supports the `some_path` query, which gives you the shortest path
 for how one function depends on another.
 
 Run this tool as follows:
-```bash
+```console
 # activate is only needed once to install the dart2js_info* executables
-pub global activate dart2js_info
-dart2js_info_code_deps out.js.info.json some_path main foo
+$ pub global activate dart2js_info
+$ dart2js_info_code_deps out.js.info.json some_path main foo
 ```
 
 The arguments to the query are regular expressions that can be used to
@@ -129,9 +129,9 @@ sufficient to just write that name as your regular expression.
 This command-line tool shows a diff between two info files. It can be run
 as follows:
 
-```bash
-pub global activate dart2js_info # only needed once
-dart2js_info_diff old.js.info.json new.js.info.json
+```console
+$ pub global activate dart2js_info # only needed once
+$ dart2js_info_diff old.js.info.json new.js.info.json
 ```
 
 The tool gives a breakdown of the difference between the two info files.
@@ -165,17 +165,17 @@ NO LONGER DEFERRED
 This command-line tool shows the size distribution of generated code among
 libraries. It can be run as follows:
 
-```bash
-pub global activate dart2js_info # only needed once
-dart2js_info_library_size_split out.js.info.json
+```console
+$ pub global activate dart2js_info # only needed once
+$ dart2js_info_library_size_split out.js.info.json
 ```
 
 
 Libraries can be grouped using regular expressions. You can
 specify what regular expressions to use by providing a `grouping.yaml` file:
 
-```bash
-dart2js_info_library_size_split out.js.info.json grouping.yaml
+```console
+$ dart2js_info_library_size_split out.js.info.json grouping.yaml
 ```
 
 The format of the `grouping.yaml` file is as follows:
@@ -245,9 +245,9 @@ bootstrapping code and lazy static initializers are missing.
 This tool checks that the output from dart2js meets a given specification,
 given in a YAML file. It can be run as follows:
 
-```bash
-pub global activate dart2js_info # only needed once
-dart2js_info_deferred_library_check out.js.info.json manifest.yaml
+```console
+$ pub global activate dart2js_info # only needed once
+$ dart2js_info_deferred_library_check out.js.info.json manifest.yaml
 ```
 
 The format of the YAML file is:
@@ -293,7 +293,7 @@ This tool gives a breakdown of all of the deferred code in the program by size.
 It can show how much of the total code size is deferred. It can be run as
 follows:
 
-```bash
+```console
 pub global activate dart2js_info # only needed once
 dart2js_info_deferred_library_size out.js.info.json
 ```
@@ -318,9 +318,9 @@ Percent of code deferred                  41.86%
 This tool reports which code is included in each output unit.  It can be run as
 follows:
 
-```bash
-pub global activate dart2js_info # only needed once
-dart2js_info_deferred_library_layout out.js.info.json
+```console
+$ pub global activate dart2js_info # only needed once
+$ dart2js_info_deferred_library_layout out.js.info.json
 ```
 
 The tool will output a table listing all of the deferred output units or chunks,
@@ -362,9 +362,9 @@ code of your application.  We use dependency information to compute dominance
 and reachability data as well.
 
 When you run:
-```bash
-pub global activate dart2js_info # only needed once
-dart2js_info_function_size_analysis out.js.info.json
+```console
+$ pub global activate dart2js_info # only needed once
+$ dart2js_info_function_size_analysis out.js.info.json
 ```
 
 the tool produces a table output with lots of entries. Here is an example entry
@@ -395,8 +395,8 @@ steps are as follows:
   * Compile an app with dart2js using `--dump-info` and defining the
     Dart environment `traceCalls=post`:
 
-```
-DART_VM_OPTIONS="-DtraceCalls=post" dart2js --dump-info main.dart
+```console
+$ DART_VM_OPTIONS="-DtraceCalls=post" dart2js --dump-info main.dart
 ```
 
   Because coverage/tracing data is currently experimental, the feature is
@@ -405,8 +405,8 @@ DART_VM_OPTIONS="-DtraceCalls=post" dart2js --dump-info main.dart
 
   * Launch the coverage server tool to serve up the JS code of your app:
 
-```bash
-dart2js_info_coverage_log_server main.dart.js
+```console
+$ dart2js_info_coverage_log_server main.dart.js
 ```
 
   * (optional) If you have a complex application setup, you may need to serve an
@@ -422,8 +422,8 @@ dart2js_info_coverage_log_server main.dart.js
   * Finally, run the live code analysis tool given it both the info and
     coverage json files:
 
-```bash
-dart2js_info_live_code_size_analysis main.dart.info.json main.dart.coverage.json
+```console
+$ dart2js_info_live_code_size_analysis main.dart.info.json main.dart.coverage.json
 ```
 
 ## Code location, features and bugs
