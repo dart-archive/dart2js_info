@@ -34,9 +34,11 @@ List<Diff> diff(AllInfo oldInfo, AllInfo newInfo) {
   return differ.diffs;
 }
 
-class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
+class _InfoDiffer extends InfoVisitor<Null> {
   final AllInfo _old;
   final AllInfo _new;
+
+  BasicInfo _other;
 
   List<Diff> diffs = <Diff>[];
 
@@ -47,29 +49,29 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitAll(AllInfo info, [BasicInfo context]) {
+  visitAll(AllInfo info) {
     throw new StateError('should not diff AllInfo');
   }
 
   @override
-  visitProgram(ProgramInfo info, [BasicInfo context]) {
+  visitProgram(ProgramInfo info) {
     throw new StateError('should not diff ProgramInfo');
   }
 
   @override
-  visitOutput(OutputUnitInfo info, [BasicInfo context]) {
+  visitOutput(OutputUnitInfo info) {
     throw new StateError('should not diff OutputUnitInfo');
   }
 
   // TODO(het): diff constants
   @override
-  visitConstant(ConstantInfo info, [BasicInfo context]) {
+  visitConstant(ConstantInfo info) {
     throw new StateError('should not diff ConstantInfo');
   }
 
   @override
-  visitLibrary(LibraryInfo info, [BasicInfo context]) {
-    var other = context as LibraryInfo;
+  visitLibrary(LibraryInfo info) {
+    var other = _other as LibraryInfo;
     _checkSize(info, other);
     _diffList(info.topLevelVariables, other.topLevelVariables);
     _diffList(info.topLevelFunctions, other.topLevelFunctions);
@@ -77,8 +79,8 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitClass(ClassInfo info, [BasicInfo context]) {
-    var other = context as ClassInfo;
+  visitClass(ClassInfo info) {
+    var other = _other as ClassInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
     _diffList(info.fields, other.fields);
@@ -86,32 +88,32 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
   }
 
   @override
-  visitClosure(ClosureInfo info, [BasicInfo context]) {
-    var other = context as ClosureInfo;
+  visitClosure(ClosureInfo info) {
+    var other = _other as ClosureInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
     _diffList([info.function], [other.function]);
   }
 
   @override
-  visitField(FieldInfo info, [BasicInfo context]) {
-    var other = context as FieldInfo;
+  visitField(FieldInfo info) {
+    var other = _other as FieldInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
     _diffList(info.closures, other.closures);
   }
 
   @override
-  visitFunction(FunctionInfo info, [BasicInfo context]) {
-    var other = context as FunctionInfo;
+  visitFunction(FunctionInfo info) {
+    var other = _other as FunctionInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
     _diffList(info.closures, other.closures);
   }
 
   @override
-  visitTypedef(TypedefInfo info, [BasicInfo context]) {
-    var other = context as TypedefInfo;
+  visitTypedef(TypedefInfo info) {
+    var other = _other as TypedefInfo;
     _checkSize(info, other);
     _checkDeferredStatus(info, other);
   }
@@ -150,7 +152,8 @@ class _InfoDiffer extends InfoVisitor<Null, BasicInfo> {
       if (newNames[oldName] == null) {
         diffs.add(new RemoveDiff(oldNames[oldName]));
       } else {
-        oldNames[oldName].accept(this, newNames[oldName]);
+        _other = newNames[oldName];
+        oldNames[oldName].accept(this);
       }
     }
     for (var newName in newNames.keys) {

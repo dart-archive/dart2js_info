@@ -122,14 +122,14 @@ class _SizeTracker extends RecursiveInfoVisitor {
   }
 
   bool _debug = false;
-  visitLibrary(LibraryInfo info, [_]) {
+  visitLibrary(LibraryInfo info) {
     if (_debugLibName != null) _debug = info.name.contains(_debugLibName);
     _push();
     if (_debug) {
       _debugCode.write('{\n');
       _indent = 4;
     }
-    super.visitLibrary(info, null);
+    super.visitLibrary(info);
     _pop(info);
     if (_debug) {
       _debug = false;
@@ -170,23 +170,23 @@ class _SizeTracker extends RecursiveInfoVisitor {
     stack.last._count++;
   }
 
-  visitField(FieldInfo info, [_]) {
+  visitField(FieldInfo info) {
     _handleCodeInfo(info);
-    super.visitField(info, null);
+    super.visitField(info);
   }
 
-  visitFunction(FunctionInfo info, [_]) {
+  visitFunction(FunctionInfo info) {
     _handleCodeInfo(info);
-    super.visitFunction(info, null);
+    super.visitFunction(info);
   }
 
-  visitTypedef(TypedefInfo info, [_]) {
+  visitTypedef(TypedefInfo info) {
     if (_debug) print('$info');
     stack.last._totalSize += info.size;
-    super.visitTypedef(info, null);
+    super.visitTypedef(info);
   }
 
-  visitClass(ClassInfo info, [_]) {
+  visitClass(ClassInfo info) {
     if (_debug) {
       print('$info');
       _debugCode.write(' ' * _indent);
@@ -194,7 +194,7 @@ class _SizeTracker extends RecursiveInfoVisitor {
       _indent += 2;
     }
     _push();
-    super.visitClass(info, null);
+    super.visitClass(info);
     _pop(info);
     if (_debug) {
       _debugCode.write(' ' * _indent);

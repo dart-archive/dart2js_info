@@ -83,13 +83,13 @@ class UrlRetriever extends RecursiveInfoVisitor {
   }
 
   @override
-  visitLibrary(LibraryInfo info, [_]) {
+  visitLibrary(LibraryInfo info) {
     _paths.add(info.uri.path);
-    super.visitLibrary(info, null);
+    super.visitLibrary(info);
   }
 
   @override
-  visitFunction(FunctionInfo info, [_]) {
+  visitFunction(FunctionInfo info) {
     var path = info.measurements?.uri?.path;
     if (path != null) _paths.add(path);
   }
@@ -117,7 +117,7 @@ class SendHighlighter extends RecursiveInfoVisitor {
   }
 
   @override
-  Null visitFunction(FunctionInfo function, [_]) {
+  Null visitFunction(FunctionInfo function) {
     if (function.measurements?.uri?.path != path) return null;
     var entries = function.measurements.entries;
     for (var metric in entries.keys) {

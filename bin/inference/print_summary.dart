@@ -71,18 +71,18 @@ class _Counter extends RecursiveInfoVisitor {
   Measurements currentBundleTotals;
   Measurements totals = new Measurements();
 
-  visitLibrary(LibraryInfo info, [_]) {
+  visitLibrary(LibraryInfo info) {
     var uri = info.uri;
     var bundle = uri.scheme == 'package'
         ? uri.pathSegments.first
         : uri.scheme == 'file' ? uri.pathSegments.last : '$uri';
     currentBundleTotals =
         bundleTotals.putIfAbsent(bundle, () => new Measurements());
-    super.visitLibrary(info, null);
+    super.visitLibrary(info);
     totals.addFrom(currentBundleTotals);
   }
 
-  Null visitFunction(FunctionInfo function, [_]) {
+  Null visitFunction(FunctionInfo function) {
     var measurements = function.measurements;
     if (measurements == null) return null;
     currentBundleTotals.addFrom(measurements);
