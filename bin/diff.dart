@@ -45,6 +45,8 @@ main(List<String> args) async {
     }
   }
 
+  // TODO(het): Improve this output. Siggi has good suggestions in
+  // https://github.com/dart-lang/dart2js_info/pull/19
   var overallSizeDiff = newInfo.program.size - oldInfo.program.size;
   _section('OVERALL SIZE DIFFERENCE');
   print('$overallSizeDiff bytes');
