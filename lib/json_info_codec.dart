@@ -20,22 +20,28 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
 
     var result = new AllInfo();
     var elements = json['elements'];
-    result.libraries
-        .addAll((elements['library'] as Map).values.map(parseLibrary));
-    result.classes.addAll((elements['class'] as Map).values.map(parseClass));
-    result.functions
-        .addAll((elements['function'] as Map).values.map(parseFunction));
+    // TODO(srawlins): Since only the Map values are being extracted below,
+    // replace `as` with `cast` when `cast` becomes available in Dart 2.0:
+    //
+    //     .addAll(elements['library'].values.cast<Map>().map(parseLibrary));
+    result.libraries.addAll(
+        (elements['library'] as Map<dynamic, Map>).values.map(parseLibrary));
+    result.classes.addAll(
+        (elements['class'] as Map<dynamic, Map>).values.map(parseClass));
+    result.functions.addAll(
+        (elements['function'] as Map<dynamic, Map>).values.map(parseFunction));
 
     // TODO(het): Revert this when the dart2js with the new codec is in stable
     if (elements['closure'] != null) {
-      result.closures
-          .addAll((elements['closure'] as Map).values.map(parseClosure));
+      result.closures.addAll(
+          (elements['closure'] as Map<dynamic, Map>).values.map(parseClosure));
     }
-    result.fields.addAll((elements['field'] as Map).values.map(parseField));
-    result.typedefs
-        .addAll((elements['typedef'] as Map).values.map(parseTypedef));
-    result.constants
-        .addAll((elements['constant'] as Map).values.map(parseConstant));
+    result.fields.addAll(
+        (elements['field'] as Map<dynamic, Map>).values.map(parseField));
+    result.typedefs.addAll(
+        (elements['typedef'] as Map<dynamic, Map>).values.map(parseTypedef));
+    result.constants.addAll(
+        (elements['constant'] as Map<dynamic, Map>).values.map(parseConstant));
 
     var idMap = new SplayTreeMap<String, Info>(compareNatural);
     for (var f in result.functions) {
@@ -60,7 +66,7 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
     });
 
     result.outputUnits
-        .addAll((json['outputUnits'] as List).map(parseOutputUnit));
+        .addAll((json['outputUnits'] as List<Map>).map(parseOutputUnit));
 
     result.program = parseProgram(json['program']);
     // todo: version, etc
@@ -132,7 +138,7 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
       ..code = json['code']
       ..isConst = json['const'] ?? false
       ..initializer = parseId(json['initializer'])
-      ..closures = (json['children'] as List).map(parseId).toList();
+      ..closures = (json['children'] as List<String>).map(parseId).toList();
   }
 
   ConstantInfo parseConstant(Map json) {
@@ -220,12 +226,13 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
       ..type = json['type']
       ..returnType = json['returnType']
       ..inferredReturnType = json['inferredReturnType']
-      ..parameters = (json['parameters'] as List).map(parseParameter).toList()
+      ..parameters =
+          (json['parameters'] as List<Map>).map(parseParameter).toList()
       ..code = json['code']
       ..sideEffects = json['sideEffects']
       ..modifiers =
           parseModifiers(new Map<String, bool>.from(json['modifiers']))
-      ..closures = (json['children'] as List).map(parseId).toList()
+      ..closures = (json['children'] as List<String>).map(parseId).toList()
       ..measurements = parseMeasurements(json['measurements']);
   }
 
