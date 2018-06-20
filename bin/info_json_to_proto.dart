@@ -12,7 +12,7 @@ import 'package:dart2js_info/src/util.dart';
 
 main(args) async {
   if (args.length != 2) {
-    print('usage: dart tool/library_size_split.dart '
+    print('usage: dart tool/info_json_to_proto.dart '
         'path-to-info.json path-to-info.pb');
     exit(1);
   }
