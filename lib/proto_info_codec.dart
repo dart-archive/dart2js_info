@@ -248,6 +248,10 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
   }
 }
 
+/// A codec for converting [AllInfo] to a protobuf format.
+/// 
+/// This codec is still experimental, and will likely crash on certain output
+/// from dart2js.
 class AllInfoProtoCodec extends Codec<AllInfo, AllInfoPB> {
   final Converter<AllInfo, AllInfoPB> encoder = new AllInfoToProtoConverter();
   final Converter<AllInfoPB, AllInfo> decoder = new ProtoToAllInfoConverter();
