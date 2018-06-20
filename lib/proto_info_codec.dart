@@ -14,10 +14,10 @@ export 'src/proto/info.pb.dart';
 
 class ProtoToAllInfoConverter extends Converter<AllInfoPB, AllInfo> {
   AllInfo convert(AllInfoPB info) {
-    // Do we need to implement this? The proto format is useful for doing
-    // analysis in non-Dart languages. In these cases, its likely that the
-    // proto format itself will be more useful to consumers than trying to
-    // convert back to the [AllInfo] graph.
+    // TODO(lorenvs): Implement this conversion. It is unlikely to to be used
+    // by production code since the goal of the proto codec is to consume this
+    // information from other languages. However, it is useful for roundtrip
+    // testing, so we should support it.
     throw new UnimplementedError('ProtoToAllInfoConverter is not implemented');
   }
 }
