@@ -32,8 +32,11 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
   }
 
   static MeasurementsPB _convertToMeasurementsPB(Measurements measurements) {
-    final proto = new MeasurementsPB()
-      ..sourceFile = measurements.uri.toString();
+    final proto = new MeasurementsPB();
+
+    if (measurements.uri != null) {
+      proto.sourceFile = measurements.uri.toString();
+    }
 
     measurements.entries.forEach((metric, values) {
       final entryProto = new MeasurementEntryPB()..name = metric.name;
@@ -89,9 +92,7 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
   static FunctionInfoPB _convertToFunctionInfoPB(FunctionInfo info) {
     final proto = new FunctionInfoPB()
       ..functionModifiers = _convertToFunctionModifiers(info.modifiers)
-      ..inlinedCount = info.inlinedCount
-      ..code = info.code
-      ..measurements = _convertToMeasurementsPB(info.measurements);
+      ..inlinedCount = info.inlinedCount ?? 0;
 
     if (info.returnType != null) {
       proto.returnType = info.returnType;
@@ -101,8 +102,16 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
       proto.inferredReturnType = info.inferredReturnType;
     }
 
+    if (info.code != null) {
+      proto.code = info.code;
+    }
+
     if (info.sideEffects != null) {
       proto.sideEffects = info.sideEffects;
+    }
+
+    if (info.measurements != null) {
+      proto.measurements = _convertToMeasurementsPB(info.measurements);
     }
 
     proto.childrenIds
@@ -116,9 +125,15 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
     final proto = new FieldInfoPB()
       ..type = info.type
       ..inferredType = info.inferredType
-      ..code = info.code
-      ..isConst = info.isConst
-      ..initializerId = info.initializer?.serializedId;
+      ..isConst = info.isConst;
+
+    if (info.code != null) {
+      proto.code = info.code;
+    }
+
+    if (info.initializer != null) {
+      proto.initializerId = info.initializer.serializedId;
+    }
 
     proto.childrenIds
         .addAll(info.closures.map((closure) => closure.serializedId));
@@ -132,7 +147,7 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
 
   static OutputUnitInfoPB _convertToOutputUnitInfoPB(OutputUnitInfo info) {
     final proto = new OutputUnitInfoPB();
-    proto.imports.addAll(info.imports);
+    proto.imports.addAll(info.imports.where((import) => import != null));
     return proto;
   }
 
@@ -146,10 +161,13 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
 
   static InfoPB _convertToInfoPB(Info info) {
     final proto = new InfoPB()
-      ..name = info.name
       ..id = info.id
       ..serializedId = info.serializedId
       ..size = info.size;
+
+    if (info.name != null) {
+      proto.name = info.name;
+    }
 
     if (info.parent != null) {
       proto.parentId = info.parent.serializedId;

@@ -20,9 +20,9 @@ main() {
       expect(proto.program.size, 10324);
       expect(proto.program.compilationMoment.toInt(),
           DateTime.parse("2017-04-17 09:46:41.661617").microsecondsSinceEpoch);
-      expect(proto.program.toProtoDuration,
+      expect(proto.program.toProtoDuration.toInt(),
           new Duration(milliseconds: 4).inMicroseconds);
-      expect(proto.program.dumpInfoDuration,
+      expect(proto.program.dumpInfoDuration.toInt(),
           new Duration(milliseconds: 0).inMicroseconds);
       expect(proto.program.noSuchMethodEnabled, isFalse);
       expect(proto.program.minified, isFalse);
