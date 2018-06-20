@@ -3,7 +3,14 @@
 // BSD-style license that can be found in the LICENSE file.
 
 /// Converters and codecs for converting between Protobuf and [Info] classes.
-part of dart2js_info.info;
+
+import 'dart:convert';
+import 'package:fixnum/fixnum.dart';
+
+import 'info.dart';
+import 'src/proto/info.pb.dart';
+
+export 'src/proto/info.pb.dart';
 
 class ProtoToAllInfoConverter extends Converter<AllInfoPB, AllInfo> {
   AllInfo convert(AllInfoPB info) {

@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart2js_info/info.dart';
+import 'package:dart2js_info/proto_info_codec.dart';
 import 'package:test/test.dart';
 
 main() {
