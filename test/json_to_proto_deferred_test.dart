@@ -10,8 +10,8 @@ import 'package:dart2js_info/proto_info_codec.dart';
 import 'package:test/test.dart';
 
 main() {
-  group('json to proto conversion', () {
-    test('hello_world', () {
+  group('json to proto conversion with deferred files', () {
+    test('hello_world_deferred', () {
       final helloWorld = new File(
           'test/hello_world_deferred/hello_world_deferred.js.info.json');
       final json = jsonDecode(helloWorld.readAsStringSync());
