@@ -6,7 +6,7 @@ message DependencyInfoPB {
   /** The dependency element's serialized_id, references as FunctionInfo or FieldInfo. */
   string target_id = 1;
 
-  /** Either a selector mask indicating how ths is used, or 'inlined'. */
+  /** Either a selector mask indicating how this is used, or 'inlined'. */
   string mask = 2;
 }
 
@@ -15,7 +15,7 @@ message AllInfoPB {
   /** Summary information about the program. */
   ProgramInfoPB program = 1;
 
-  /** All the recorded infromation about elements processed by the compiler. */
+  /** All the recorded information about elements processed by the compiler. */
   map<string, InfoPB> all_infos = 2;
 }
 
@@ -31,7 +31,7 @@ message InfoPB {
   /** An id to uniquely identify this info among infos of the same kind. */
   int32 id = 2;
 
-  /** A globally unique id which combining kind and id together. */
+  /** A globally unique id which combines kind and id together. */
   string serialized_id = 3;
 
   /** Id used by the compiler when instrumenting code for code coverage. */
