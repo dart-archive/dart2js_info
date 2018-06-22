@@ -31,13 +31,14 @@ main() {
       // Dart protobuf doesn't support maps, translate the info list into
       // a map for associative verifications.
       final infoMap = <String, InfoPB>{};
-      infoMap.addEntries(proto.allInfos.map((entry) => new MapEntry<String, InfoPB>(entry.key, entry.value)));
+      infoMap.addEntries(proto.allInfos.map(
+          (entry) => new MapEntry<String, InfoPB>(entry.key, entry.value)));
 
       final entrypoint = infoMap[proto.program.entrypointId];
       expect(entrypoint, isNotNull);
       expect(entrypoint.hasFunctionInfo(), isTrue);
       expect(entrypoint.outputUnitId, isNotNull);
-      
+
       // The output unit of the entrypoint function should be the default
       // entrypoint, which should have no imports.
       final defaultOutputUnit = infoMap[entrypoint.outputUnitId];
