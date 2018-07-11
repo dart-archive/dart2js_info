@@ -82,6 +82,14 @@ message InfoPB {
 
     /** Information about a closure element. */
     ClosureInfoPB closure_info = 107;
+
+    /**
+     * Information about a deferred import.
+     *
+     * TODO(lorenvs): this is not currently populated by dart2js. Consumers
+     * should prefer deferred_imports on AllInfoPB for the time being.
+     */
+    DeferredImportInfoPB deferred_import_info = 108;
   }
 }
 
@@ -144,6 +152,17 @@ message LibraryInfoPB {
 message OutputUnitInfoPB {
   /** The deferred imports that will load this output unit. */
   repeated string imports = 1;
+
+  /**
+   * The deferred imports that will load this output unit.
+   *
+   * imports above references import names from deferredFiles on AllInfoPB,
+   * whereas these ids reference DeferredImportInfoPBs by id.
+   *   
+   * TODO(lorenvs): this is not currently populated by dart2js. Consumers
+   * should prefer deferred_imports on AllInfoPB for the time being. 
+   */
+  repeated string deferredImportIds = 2;
 }
 
 /** Information about a class element. */
@@ -290,4 +309,15 @@ message LibraryDeferredImportsPB {
 
   /** The individual deferred imports within the library. */
   repeated DeferredImportPB imports = 3;
+}
+
+/**
+ * Information about a deferred import within a dart library.
+ *
+ * TODO(lorenvs): this is not currently populated by dart2js. Consumers
+ * should prefer deferred_imports on AllInfoPB for the time being.
+ */
+message DeferredImportInfoPB {
+  /** The serialized ids of all OutputUnitInfos required by this DeferredImportInfoPB. */
+  repeated string required_output_unit_ids = 1;
 }

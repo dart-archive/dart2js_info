@@ -45,6 +45,21 @@ main() {
       expect(defaultOutputUnit, isNotNull);
       expect(defaultOutputUnit.hasOutputUnitInfo(), isTrue);
       expect(defaultOutputUnit.outputUnitInfo.imports, isEmpty);
+
+      final deferredImportInfos = proto.allInfos
+          .where((info) => info.value.hasDeferredImportInfo())
+          .map((info) => info.value)
+          .toList();
+      expect(deferredImportInfos, hasLength(1));
+      final deferredImportInfo = deferredImportInfos.first;
+      expect(deferredImportInfo.name, "deferred_import");
+      expect(deferredImportInfo.parentId, startsWith("library/"));
+      expect(deferredImportInfo.deferredImportInfo.requiredOutputUnitIds,
+          hasLength(1));
+      final requiredOutputUnitId =
+          deferredImportInfo.deferredImportInfo.requiredOutputUnitIds.first;
+      expect(deferredImportInfo.outputUnitId, isNot(requiredOutputUnitId));
+      expect(infoMap[requiredOutputUnitId].name, isNot("main"));
     });
   });
 }

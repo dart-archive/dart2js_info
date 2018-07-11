@@ -74,6 +74,8 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
         .addAll(info.topLevelVariables.map((field) => field.serializedId));
     proto.childrenIds.addAll(info.classes.map((clazz) => clazz.serializedId));
     proto.childrenIds.addAll(info.typedefs.map((def) => def.serializedId));
+    proto.childrenIds
+        .addAll(info.deferredImports.map((import) => import.serializedId));
 
     return proto;
   }
@@ -155,6 +157,8 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
   static OutputUnitInfoPB _convertToOutputUnitInfoPB(OutputUnitInfo info) {
     final proto = new OutputUnitInfoPB();
     proto.imports.addAll(info.imports.where((import) => import != null));
+    proto.deferredImportIds
+        .addAll(info.deferredImports.map((import) => import.serializedId));
     return proto;
   }
 
@@ -164,6 +168,14 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
 
   static ClosureInfoPB _convertToClosureInfoPB(ClosureInfo info) {
     return new ClosureInfoPB()..functionId = info.function.serializedId;
+  }
+
+  static DeferredImportInfoPB _convertToDeferredImportInfoPB(
+      DeferredImportInfo info) {
+    final proto = new DeferredImportInfoPB();
+    proto.requiredOutputUnitIds
+        .addAll(info.requiredOutputUnits.map((o) => o.serializedId));
+    return proto;
   }
 
   static InfoPB _convertToInfoPB(Info info) {
@@ -211,6 +223,8 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
       proto.typedefInfo = _convertToTypedefInfoPB(info);
     } else if (info is ClosureInfo) {
       proto.closureInfo = _convertToClosureInfoPB(info);
+    } else if (info is DeferredImportInfo) {
+      proto.deferredImportInfo = _convertToDeferredImportInfoPB(info);
     }
 
     return proto;
@@ -273,6 +287,7 @@ class AllInfoToProtoConverter extends Converter<AllInfo, AllInfoPB> {
     proto.allInfos.addAll(_convertToAllInfosEntries(info.outputUnits));
     proto.allInfos.addAll(_convertToAllInfosEntries(info.typedefs));
     proto.allInfos.addAll(_convertToAllInfosEntries(info.closures));
+    proto.allInfos.addAll(_convertToAllInfosEntries(info.deferredImports));
 
     info.deferredFiles?.forEach((libraryUri, fields) {
       proto.deferredImports

@@ -69,6 +69,11 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
     result.outputUnits
         .addAll((json['outputUnits'] as List).map((o) => parseOutputUnit(o)));
 
+    if (json['deferredImports'] != null) {
+      result.deferredImports.addAll(
+          (json['deferredImports'] as List).map((i) => parseDeferredImport(i)));
+    }
+
     result.program = parseProgram(json['program']);
 
     if (json['deferredFiles'] != null) {
@@ -99,6 +104,10 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
       ..size = json['size'];
     result.imports
         .addAll((json['imports'] as List).map((s) => s as String) ?? const []);
+    if (json['deferredImportIds'] != null) {
+      result.deferredImports.addAll((json['deferredImportIds'] as List)
+          .map<DeferredImportInfo>((id) => parseId(id)));
+    }
     return result;
   }
 
@@ -116,9 +125,11 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
         result.topLevelVariables.add(child);
       } else if (child is ClassInfo) {
         result.classes.add(child);
-      } else {
-        assert(child is TypedefInfo);
+      } else if (child is TypedefInfo) {
         result.typedefs.add(child);
+      } else {
+        assert(child is DeferredImportInfo);
+        result.deferredImports.add(child);
       }
     }
     return result;
@@ -263,6 +274,18 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
       ..measurements = parseMeasurements(json['measurements']);
   }
 
+  DeferredImportInfo parseDeferredImport(Map json) {
+    DeferredImportInfo result = parseId(json['id']);
+    return result
+      ..name = json['name']
+      ..parent = parseId(json['parent'])
+      ..coverageId = json['coverageId']
+      ..outputUnit = parseId(json['outputUnit'])
+      ..size = json['size']
+      ..requiredOutputUnits =
+          (json['requiredOutputUnits'] as List).map((c) => parseId(c)).toList();
+  }
+
   ParameterInfo parseParameter(Map json) =>
       new ParameterInfo(json['name'], json['type'], json['declaredType']);
 
@@ -327,6 +350,8 @@ class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
         return new TypedefInfo._(serializedId);
       } else if (serializedId.startsWith('outputUnit/')) {
         return new OutputUnitInfo._(serializedId);
+      } else if (serializedId.startsWith('deferredImport/')) {
+        return new DeferredImportInfo._(serializedId);
       }
       assert(false);
     });
@@ -365,6 +390,12 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
     };
   }
 
+  @override
+  Map visitDeferredImport(DeferredImportInfo info) => _visitBasicInfo(info)
+    ..addAll({
+      'requiredOutputUnits': _toSortedSerializIds(info.requiredOutputUnits)
+    });
+
   Map _visitDependencyInfo(DependencyInfo info) =>
       {'id': info.target.serializedId, 'mask': info.mask};
 
@@ -398,6 +429,8 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
       'dependencies': jsonDependencies,
       'outputUnits': info.outputUnits.map((u) => u.accept(this)).toList(),
       'dump_version': info.version,
+      'deferredImports':
+          info.deferredImports.map((i) => i.accept(this)).toList(),
       'deferredFiles': info.deferredFiles,
       'dump_minor_version': info.minorVersion,
       'program': info.program.accept(this)

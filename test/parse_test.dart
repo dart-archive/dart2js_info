@@ -28,5 +28,23 @@ main() {
       expect(program.noSuchMethodEnabled, false);
       expect(program.minified, false);
     });
+
+    test('hello_world_deferred', () {
+      final helloWorldDeferred = new File(
+          'test/hello_world_deferred/hello_world_deferred.js.info.json');
+      final json = jsonDecode(helloWorldDeferred.readAsStringSync());
+      final decoded = new AllInfoJsonCodec().decode(json);
+
+      // There is only one deferred import, which should be from the main output unit
+      // to the second output unit.
+      expect(decoded.outputUnits, hasLength(2));
+      expect(decoded.deferredImports, hasLength(1));
+      final deferredImport = decoded.deferredImports.first;
+      expect(deferredImport.name, "deferred_import");
+      expect(deferredImport.parent, const TypeMatcher<LibraryInfo>());
+      expect(deferredImport.requiredOutputUnits, hasLength(1));
+      final requiredOutputUnit = deferredImport.requiredOutputUnits.first;
+      expect(requiredOutputUnit.name, isNot("main"));
+    });
   });
 }

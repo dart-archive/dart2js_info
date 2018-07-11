@@ -145,6 +145,13 @@ class AllInfo {
   /// deferred loading).
   List<OutputUnitInfo> outputUnits = <OutputUnitInfo>[];
 
+  /// Details about all deferred imports and what output units would be loaded
+  /// when the import is resolved.
+  ///
+  /// TODO(lorenvs): this field is not populated by dart2js yet, consumers
+  /// should continue to use [deferredFiles] for the time being.
+  List<DeferredImportInfo> deferredImports = <DeferredImportInfo>[];
+
   /// Details about all deferred imports and what files would be loaded when the
   /// import is resolved.
   // TODO(sigmund): use a different format for dump-info. This currently emits
@@ -235,6 +242,13 @@ class LibraryInfo extends BasicInfo {
   /// Typedefs defined within the library.
   final List<TypedefInfo> typedefs = <TypedefInfo>[];
 
+  /// Deferred imports from this library to other libraries.
+  ///
+  /// TODO(lorenvs): this field is not populated by dart2js yet. Consumers
+  /// should continue to use the `deferredFiles` on [AllInfo] for the time
+  /// being.
+  final List<DeferredImportInfo> deferredImports = <DeferredImportInfo>[];
+
   // TODO(sigmund): add here a list of parts. That can help us improve how we
   // encode source-span information in metrics (rather than include the uri on
   // each function, include an index into this list).
@@ -257,6 +271,13 @@ class LibraryInfo extends BasicInfo {
 class OutputUnitInfo extends BasicInfo {
   /// The deferred imports that will load this output unit.
   List<String> imports = <String>[];
+
+  /// The list of deferred imports which require this output unit.
+  ///
+  /// TODO(lorenvs): this field is not populated by dart2js yet, consumers
+  /// should continue to use `deferredFiles` on [AllInfo] for the time
+  /// being.
+  final List<DeferredImportInfo> deferredImports = <DeferredImportInfo>[];
 
   OutputUnitInfo(String name, int size)
       : super(InfoKind.outputUnit, name, null, size, null);
@@ -432,6 +453,27 @@ class ClosureInfo extends BasicInfo {
   T accept<T>(InfoVisitor<T> visitor) => visitor.visitClosure(this);
 }
 
+/// Information about a deferred import.
+///
+/// The parent of a [DeferredImportInfo] will be a [LibraryInfo], which will be
+/// the library that contains the deferred import.
+///
+/// The size of a [DeferredImportInfo] will be the sum of the sizes of all
+/// [requiredOutputUnits]. This means that the sum of the sizes of all
+/// deferred imports might be greater than the size of the total Dart binary,
+/// since it is likely that [DeferredImportInfo]s will share output units.
+class DeferredImportInfo extends BasicInfo {
+  /// The output units that would be loaded when the import is resolved.
+  List<OutputUnitInfo> requiredOutputUnits = <OutputUnitInfo>[];
+
+  DeferredImportInfo({String name, OutputUnitInfo outputUnit, int size: 0})
+      : super(InfoKind.deferredImport, name, outputUnit, size, null);
+
+  DeferredImportInfo._(String serializedId) : super._fromId(serializedId);
+
+  T accept<T>(InfoVisitor<T> visitor) => visitor.visitDeferredImport(this);
+}
+
 /// Information about how a dependency is used.
 class DependencyInfo implements Comparable<DependencyInfo> {
   /// The dependency, either a FunctionInfo or FieldInfo.
@@ -493,6 +535,7 @@ enum InfoKind {
   outputUnit,
   typedef,
   closure,
+  deferredImport,
 }
 
 String kindToString(InfoKind kind) {
@@ -513,6 +556,8 @@ String kindToString(InfoKind kind) {
       return 'typedef';
     case InfoKind.closure:
       return 'closure';
+    case InfoKind.deferredImport:
+      return 'deferredImport';
     default:
       return null;
   }
@@ -542,6 +587,8 @@ InfoKind kindFromString(String kind) {
       return InfoKind.typedef;
     case 'closure':
       return InfoKind.closure;
+    case 'deferredImport':
+      return InfoKind.deferredImport;
     default:
       return null;
   }
@@ -559,6 +606,7 @@ abstract class InfoVisitor<T> {
   T visitTypedef(TypedefInfo info);
   T visitClosure(ClosureInfo info);
   T visitOutput(OutputUnitInfo info);
+  T visitDeferredImport(DeferredImportInfo info) => null;
 }
 
 /// A visitor that recursively walks each portion of the program. Because the

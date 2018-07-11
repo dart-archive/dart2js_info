@@ -164,6 +164,7 @@
         "name": "<unnamed>",
         "size": 996,
         "children": [
+          "deferredImport/9990001",
           "function/921486255"
         ],
         "canonicalUri": "file:///usr/local/google/home/lorenvs/git/dart2js_info/test/hello_world_deferred/hello_world_deferred.dart"
@@ -26088,7 +26089,8 @@
       "size": 1353,
       "imports": [
         "deferred_import"
-      ]
+      ],
+      "deferredImports": ["deferredImport/9990001"]
     },
     {
       "id": "outputUnit/669725655",
@@ -26096,6 +26098,16 @@
       "name": "main",
       "size": 156027,
       "imports": []
+    }
+  ],
+  "deferredImports": [
+    {
+      "id": "deferredImport/9990001",
+      "kind": "deferredImport",
+      "name": "deferred_import",
+      "size": 1353,
+      "parent": "library/934372066",
+      "requiredOutputUnits": ["outputUnit/7045321"]
     }
   ],
   "dump_version": 5,
