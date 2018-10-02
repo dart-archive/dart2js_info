@@ -10,8 +10,7 @@ List<String> _toSortedSerializIds(Iterable<Info> infos) =>
 
 // TODO(sigmund): add unit tests.
 class JsonToAllInfoConverter extends Converter<Map<String, dynamic>, AllInfo> {
-  // Using `SplayTreeMap` here because it's faster than the
-  // default `LinkedHashMap`.
+  // Using `MashMap` here because it's faster than the default `LinkedHashMap`.
   final Map<String, Info> registry = new HashMap<String, Info>();
 
   AllInfo convert(Map<String, dynamic> json) {
