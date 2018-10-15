@@ -66,9 +66,12 @@ String longName(Info info, {bool useLibraryUri: false, bool forId: false}) {
     // assert(!first || segment is LibraryInfo);
     // (today might not be true for for closure classes).
     if (segment is LibraryInfo) {
+      // TODO(kevmoo): Remove this when dart2js can be invoked with an app-root
+      // custom URI
       if (useLibraryUri && forId && segment.uri.isScheme('file')) {
-        var currentBase = Uri.base.toString();
-        var segmentString = segment.uri.toString();
+        assert(Uri.base.isScheme('file'));
+        var currentBase = Uri.base.path;
+        var segmentString = segment.uri.path;
 
         // If longName is being called to calculate an element ID (forId = true)
         // then use a relative path for the longName calculation
