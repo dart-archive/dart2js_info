@@ -52,7 +52,7 @@ Graph<Info> graphFromInfo(AllInfo info) {
 
 /// Provide a unique long name associated with [info].
 // TODO(sigmund): guarantee that the name is actually unique.
-String longName(Info info, {bool useLibraryUri: false}) {
+String longName(Info info, {bool useLibraryUri: false, bool forId: false}) {
   var infoPath = [];
   while (info != null) {
     infoPath.add(info);
@@ -66,7 +66,22 @@ String longName(Info info, {bool useLibraryUri: false}) {
     // assert(!first || segment is LibraryInfo);
     // (today might not be true for for closure classes).
     if (segment is LibraryInfo) {
-      sb.write(useLibraryUri ? segment.uri : segment.name);
+      if (useLibraryUri && forId && segment.uri.isScheme('file')) {
+        var currentBase = Uri.base.toString();
+        var segmentString = segment.uri.toString();
+
+        // If longName is being called to calculate an element ID (forId = true)
+        // then use a relative path for the longName calculation
+        // This allows a more stable ID for cases when files are generated into
+        // per-build temp directories – like with pkg: build
+        if (segmentString.startsWith(currentBase)) {
+          segmentString = segmentString.substring(currentBase.length);
+        }
+
+        sb.write(segmentString);
+      } else {
+        sb.write(useLibraryUri ? segment.uri : segment.name);
+      }
       sb.write('::');
     } else {
       first = false;
