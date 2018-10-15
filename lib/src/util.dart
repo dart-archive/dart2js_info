@@ -76,7 +76,7 @@ String longName(Info info, {bool useLibraryUri: false, bool forId: false}) {
         // If longName is being called to calculate an element ID (forId = true)
         // then use a relative path for the longName calculation
         // This allows a more stable ID for cases when files are generated into
-        // per-build temp directories – like with pkg: build
+        // temp directories – e.g. with pkg:build_web_compilers
         if (segmentString.startsWith(currentBase)) {
           segmentString = segmentString.substring(currentBase.length);
         }
