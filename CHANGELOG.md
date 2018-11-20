@@ -1,3 +1,7 @@
+## 0.5.11
+* Updates `coverage_log_server.dart` and `live_code_size_analysis.dart` to make
+  them strong clean and match the latest changes in dart2js.
+
 ## 0.5.10
 
 * Set max SDK version to `<3.0.0`, and adjust other dependencies.
