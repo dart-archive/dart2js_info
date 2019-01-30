@@ -5,7 +5,7 @@
 /// Converters and codecs for converting between JSON and [Info] classes.
 part of dart2js_info.info;
 
-List<String> _toSortedSerializIds(Iterable<Info> infos, Map<Info, Id> ids) =>
+List<String> _toSortedSerializedIds(Iterable<Info> infos, Map<Info, Id> ids) =>
     infos.map((i) => ids[i].serializedId).toList()..sort(compareNatural);
 
 // TODO(sigmund): add unit tests.
@@ -406,7 +406,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
   Map _visitAllInfoDependencies(AllInfo allInfo) {
     var map = new SplayTreeMap<String, List>(compareNatural);
     allInfo.dependencies.forEach((k, v) {
-      map[idFor(k).serializedId] = _toSortedSerializIds(v, ids);
+      map[idFor(k).serializedId] = _toSortedSerializedIds(v, ids);
     });
     return map;
   }
@@ -465,7 +465,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
   Map visitLibrary(LibraryInfo info) {
     return _visitBasicInfo(info)
       ..addAll(<String, Object>{
-        'children': _toSortedSerializIds(
+        'children': _toSortedSerializedIds(
             [
               info.topLevelFunctions,
               info.topLevelVariables,
@@ -482,7 +482,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
       ..addAll(<String, Object>{
         // TODO(sigmund): change format, include only when abstract is true.
         'modifiers': {'abstract': info.isAbstract},
-        'children': _toSortedSerializIds(
+        'children': _toSortedSerializedIds(
             [info.fields, info.functions].expand((i) => i), ids)
       });
   }
@@ -490,7 +490,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
   Map visitField(FieldInfo info) {
     var result = _visitBasicInfo(info)
       ..addAll(<String, Object>{
-        'children': _toSortedSerializIds(info.closures, ids),
+        'children': _toSortedSerializedIds(info.closures, ids),
         'inferredType': info.inferredType,
         'code': info.code,
         'type': info.type,
@@ -551,7 +551,7 @@ class AllInfoToJsonConverter extends Converter<AllInfo, Map>
   Map visitFunction(FunctionInfo info) {
     return _visitBasicInfo(info)
       ..addAll(<String, Object>{
-        'children': _toSortedSerializIds(info.closures, ids),
+        'children': _toSortedSerializedIds(info.closures, ids),
         'modifiers': _visitFunctionModifiers(info.modifiers),
         'returnType': info.returnType,
         'inferredReturnType': info.inferredReturnType,
