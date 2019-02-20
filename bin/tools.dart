@@ -8,6 +8,7 @@ import 'code_deps.dart';
 import 'coverage_log_server.dart';
 import 'debug_info.dart';
 import 'diff.dart';
+import 'diff_masks.dart';
 import 'deferred_library_check.dart';
 import 'deferred_library_size.dart';
 import 'deferred_library_layout.dart';
@@ -26,6 +27,7 @@ void main(args) {
     ..addCommand(new CoverageLogServerCommand())
     ..addCommand(new DebugCommand())
     ..addCommand(new DiffCommand())
+    ..addCommand(new DiffMaskCommand())
     ..addCommand(new DeferredLibraryCheck())
     ..addCommand(new DeferredLibrarySize())
     ..addCommand(new DeferredLibraryLayout())

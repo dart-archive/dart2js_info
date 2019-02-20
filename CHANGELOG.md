@@ -1,4 +1,8 @@
-## 0.6.0-dev.0.0
+## 0.6.1-dev
+
+* added `diff_masks` tool, mostly used by dart2js developers.
+
+## 0.6.0
 
 This release contains several **breaking changes**:
 
