@@ -1,3 +1,9 @@
+## Repo deprecation notice
+
+**NOTE**: This repository as been deprecated, as the source code now lives here:
+
+https://github.com/dart-lang/sdk/tree/master/pkg/dart2js_info
+
 # Dart2js Info
 
 This package contains libraries and tools you can use to process info
